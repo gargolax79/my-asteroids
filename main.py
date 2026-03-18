@@ -1,13 +1,22 @@
 import pygame
 from constants import *
 from logger import log_state
+from player import Player
 
 def main():
+    
     pygame.init()
     clock = pygame.time.Clock()
     dt = 0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+    
+
+    # instanciamos un objeto player
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     while True:
         log_state()
         
@@ -16,6 +25,16 @@ def main():
                 return
         
         screen.fill("black")
+        
+        updatable.update(dt)
+        #player.update(dt)
+        
+        # re renderizamos al jugador en cada frame de la pantalla
+        player.draw(screen)
+        for s in drawable:
+            s.draw(screen)
+        
+
         pygame.display.flip()
         clock.tick(60)  # Limit to 60 FPS
         dt = clock.tick(60) / 1000
